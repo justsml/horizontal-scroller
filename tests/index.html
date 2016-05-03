@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
+    <link rel='stylesheet' href='./style.css?nocache'>
+    <link rel='stylesheet' href='//codepen.io/assets/reset/reset.css'>
+    <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
+    <style type="text/css">
+      /* initial css from parent app - setup to prevents FOUC while loading */
+      ul.items { height: 160px; list-style: none; }
+      ul.items li { height: 160px; width: 200px; display: inline-block; }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="well well-sm text-center">
+        <h2>
+          Horizontal Scrolling Widget
+          <div class="small">In Pure JavaScript &amp; CSS</div>
+        </h2>
+        <div class="btn-group">
+          <div id='start' onclick="initScroller()" class="btn btn-success">Init Scroller</div>
+          <div id='destroy' onclick="scrollerUI.destroy()" class="btn btn-danger">Destroy Scroller</div>
+        </div>
+      </div>
+      <div class="text-center">
+        <div style="width: 720px;" class="scroller">
+          <svg width="56" height="92" class="arrow leftArrow">
+            <path d="M 48 1 L 2 43.26893433745849 M 45.64071092134583 88 L 2 43.26893433745849" class="icon svgArrow"></path>
+          </svg>
+          <div class="wrapper">
+            <ul class="items">
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=sky" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=vine" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=lava" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=gray" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=industrial" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=social" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=sky" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=vine" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=lava" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=gray" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=industrial" /></li>
+              <li><img data-src="holder.js/200x160?outline=yes&amp;theme=social" /></li>
+            </ul>
+          </div>
+          <svg width="56" height="92" class="arrow rightArrow">
+            <path d="M 2 1 L 48 43.26893433745849 M 4.359289078654172 88 L 48 43.26893433745849" class="icon svgArrow"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/holder/2.9.3/holder.min.js'></script>
+    <script src='../dist/bundle.js?cache=not-now'></script>
+    <script>
+      var scrollerUI;
+      function initScroller() {
+        scrollerUI = Scroller.Horizontal(document.querySelector('.scroller'))
+      }
+      setTimeout(initScroller, 250)
+    </script>
+  </body>
+
+</html>
+
