@@ -1,26 +1,14 @@
 .unselectable {
   user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
 }
 .container {
   user-select: none;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
 }
 .scroller {
   width: 100%;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-flow: row no-wrap;
-      -ms-flex-flow: row no-wrap;
-          flex-flow: row no-wrap;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  flex-flow: row no-wrap;
+  justify-content: space-between;
 }
 .scroller .svgArrow {
   fill: none;
@@ -32,9 +20,7 @@
 .scroller .arrow {
   margin: 0 0.5rem;
   zoom: 0.75;
-  -webkit-align-self: center;
-      -ms-flex-item-align: center;
-          align-self: center;
+  align-self: center;
   cursor: pointer;
 }
 .scroller .arrow:hover .svgArrow {
@@ -47,18 +33,12 @@
   background-color: #CCCCCC;
 }
 .scroller .items {
-  transition: -webkit-transform 0.12s ease-in;
   transition: transform 0.12s ease-in;
-  transition: transform 0.12s ease-in, -webkit-transform 0.12s ease-in;
   margin: 1rem;
   list-style: none;
-  display: -webkit-inline-flex;
-  display: -ms-inline-flexbox;
   display: inline-flex;
-  -webkit-flex-wrap: no-wrap;
-      -ms-flex-wrap: no-wrap;
-          flex-wrap: no-wrap;
+  flex-wrap: no-wrap;
 }
-.scroller .items .unselectable li {
+.scroller .items .unselectable {
   margin-right: 2rem;
 }

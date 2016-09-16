@@ -16,7 +16,7 @@
     "watch": "webpack --watch --config ./webpack.config.js",
     "test-debug": "casperjs test --verbose --log-level=debug ./tests/e2e-tests.js",
     "test": "casperjs test --verbose ./tests/e2e-tests.js",
-    "copy": "cp -rav ./tests/* ./dist/* ./docs/"
+    "copy": "cp -rav ./tests/index.html ./dist/* ./docs/"
   },
   "author": "Dan Levy <Dan@DanLevy.net>",
   "license": "MIT",
