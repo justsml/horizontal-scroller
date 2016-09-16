@@ -10,6 +10,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && http-server -p 1997",
+    "start-now": "http-server -p 443",
     "build": "webpack --config ./webpack.config.js",
     "watch": "webpack --watch --config ./webpack.config.js",
     "test-debug": "casperjs test --verbose --log-level=debug ./tests/e2e-tests.js",
