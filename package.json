@@ -6,7 +6,7 @@
       "es2015"
     ]
   },
-  "description": "",
+  "description": "~2kB Horizontal Scrolling Widget in Pure JS + CSS",
   "main": "index.js",
   "scripts": {
     "start": "npm run build && http-server -p 1997",
