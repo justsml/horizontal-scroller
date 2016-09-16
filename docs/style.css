@@ -11,7 +11,7 @@
   -ms-user-select: none;
 }
 .scroller {
-  width: 940px;
+  width: 100%;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -46,7 +46,7 @@
   width: 100%;
   background-color: #CCCCCC;
 }
-.scroller ul.items {
+.scroller .items {
   transition: -webkit-transform 0.12s ease-in;
   transition: transform 0.12s ease-in;
   transition: transform 0.12s ease-in, -webkit-transform 0.12s ease-in;
@@ -59,6 +59,6 @@
       -ms-flex-wrap: no-wrap;
           flex-wrap: no-wrap;
 }
-.scroller ul.items .unselectable li {
+.scroller .items .unselectable li {
   margin-right: 2rem;
 }

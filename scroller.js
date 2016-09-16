@@ -4,13 +4,17 @@ const initScroller = () => imgScroller = Scroller(document.querySelector('.scrol
 setTimeout(initScroller, 2500);
 */
 
+const {enableLongClick} = require('./enableLongClick');
+
 module.exports = Scroller;
 
 function Scroller(el) {
   let wrapper, itemList, leftBtn, rightBtn, css, // Elements
       transformMaxPx, stepSizePx,                // Misc scroll coords
       currentXOffset = 0,
-      scrollLeft, scrollRight; // event fn hooks
+      cleanupHandles = [], // destroy() helper
+      scrollLeft, scrollRight, //click events
+      jumpLeft,   jumpRight; //  click events
   wrapper   = el.querySelector('.wrapper');
   itemList  = el.querySelector('.items');
   leftBtn   = el.querySelector('.leftArrow');
@@ -27,9 +31,11 @@ function Scroller(el) {
     transformMaxPx  = totalWidth - scrollWidth;
     scrollLeft      = scroll.bind(null, 'left', stepSizePx);
     scrollRight     = scroll.bind(null, 'right', stepSizePx);
+    jumpLeft        = scroll.bind(null, 'left', 2 * stepSizePx);
+    jumpRight       = scroll.bind(null, 'right', 2 * stepSizePx);
     return item;
   }
-  function scroll(direction) {
+  function scroll(direction, stepSizePx = stepSizePx, event = {}) {
     let tempOffset = currentXOffset;
     if (direction === 'left') {
       currentXOffset += stepSizePx;
@@ -54,11 +60,21 @@ function Scroller(el) {
       document.head.appendChild(css);
     }
   }
+  function setupEvents() {
+    cleanupHandles = enableLongClick([leftBtn, rightBtn]);
+    cleanupHandles.push(() => leftBtn.removeEventListener('click', scrollLeft, false));
+    cleanupHandles.push(() => rightBtn.removeEventListener('click', scrollRight, false));
+    cleanupHandles.push(() => leftBtn.removeEventListener('longclick', scrollLeft, false));
+    cleanupHandles.push(() => rightBtn.removeEventListener('longclick', scrollRight, false));
+    leftBtn.addEventListener('longclick', scrollLeft, false);
+    rightBtn.addEventListener('longclick', scrollRight, false);
+    leftBtn.addEventListener('click', scrollLeft, false);
+    rightBtn.addEventListener('click', scrollRight, false);
+  }
   function init() {
     injectStyles();
     updateLayout();
-    leftBtn.addEventListener('click', scrollLeft);
-    rightBtn.addEventListener('click', scrollRight);
+    setupEvents();
     itemList.style.transform = 'translatex(0px)';
     return { scroll, destroy };
     // 'debug': {
@@ -66,10 +82,10 @@ function Scroller(el) {
     // }
   }
   function destroy() {
-    leftBtn.removeEventListener('click', scrollLeft);
-    rightBtn.removeEventListener('click', scrollRight);
     if (css) { css.parentNode.removeChild(css); }
+    cleanupHandles.map(fn => fn());
   }
+
   return init();
 }
 

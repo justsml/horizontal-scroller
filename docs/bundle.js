@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["horizontal-scroller"] = factory();
+		exports["Scroller"] = factory();
 	else
-		root["horizontal-scroller"] = factory();
+		root["Scroller"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -67,7 +67,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	window.Scroller = window.Scroller || _scroller2.default;
+	window.Scroller = _scroller2.default;
 
 	exports.Horizontal = _scroller2.default;
 
@@ -75,7 +75,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["HorizontalScroller"] = __webpack_require__(2);
+	/* WEBPACK VAR INJECTION */(function(global) {module.exports = global["Scroller"] = __webpack_require__(2);
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
@@ -90,11 +90,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	setTimeout(initScroller, 2500);
 	*/
 
-	var _require = __webpack_require__(3);
-
-	var enableLongClick = _require.enableLongClick;
-
-
 	module.exports = Scroller;
 
 	function Scroller(el) {
@@ -108,13 +103,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      stepSizePx = void 0,
 	      // Misc scroll coords
 	  currentXOffset = 0,
-	      cleanupHandles = [],
-	      // destroy() helper
-	  scrollLeft = void 0,
-	      scrollRight = void 0,
-	      //click events
-	  jumpLeft = void 0,
-	      jumpRight = void 0; //  click events
+	      scrollLeft = void 0,
+	      scrollRight = void 0; // event fn hooks
 	  wrapper = el.querySelector('.wrapper');
 	  itemList = el.querySelector('.items');
 	  leftBtn = el.querySelector('.leftArrow');
@@ -131,14 +121,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    transformMaxPx = totalWidth - scrollWidth;
 	    scrollLeft = scroll.bind(null, 'left', stepSizePx);
 	    scrollRight = scroll.bind(null, 'right', stepSizePx);
-	    jumpLeft = scroll.bind(null, 'left', 2 * stepSizePx);
-	    jumpRight = scroll.bind(null, 'right', 2 * stepSizePx);
 	    return item;
 	  }
 	  function scroll(direction) {
-	    var stepSizePx = arguments.length <= 1 || arguments[1] === undefined ? stepSizePx : arguments[1];
-	    var event = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-
 	    var tempOffset = currentXOffset;
 	    if (direction === 'left') {
 	      currentXOffset += stepSizePx;
@@ -159,36 +144,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function injectStyles() {
 	    css = document.querySelector('style#horizontal-scroller');
 	    if (!css) {
-	      var styles = __webpack_require__(5);
+	      var styles = __webpack_require__(3);
 	      css = document.createElement('style');
 	      css.id = 'horizontal-scroller';
 	      css.innerHTML = styles;
 	      document.head.appendChild(css);
 	    }
 	  }
-	  function setupEvents() {
-	    cleanupHandles = enableLongClick([leftBtn, rightBtn]);
-	    cleanupHandles.push(function () {
-	      return leftBtn.removeEventListener('click', scrollLeft, false);
-	    });
-	    cleanupHandles.push(function () {
-	      return rightBtn.removeEventListener('click', scrollRight, false);
-	    });
-	    cleanupHandles.push(function () {
-	      return leftBtn.removeEventListener('longclick', scrollLeft, false);
-	    });
-	    cleanupHandles.push(function () {
-	      return rightBtn.removeEventListener('longclick', scrollRight, false);
-	    });
-	    leftBtn.addEventListener('longclick', scrollLeft, false);
-	    rightBtn.addEventListener('longclick', scrollRight, false);
-	    leftBtn.addEventListener('click', scrollLeft, false);
-	    rightBtn.addEventListener('click', scrollRight, false);
-	  }
 	  function init() {
 	    injectStyles();
 	    updateLayout();
-	    setupEvents();
+	    leftBtn.addEventListener('click', scrollLeft);
+	    rightBtn.addEventListener('click', scrollRight);
 	    itemList.style.transform = 'translatex(0px)';
 	    return { scroll: scroll, destroy: destroy };
 	    // 'debug': {
@@ -196,14 +163,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // }
 	  }
 	  function destroy() {
+	    leftBtn.removeEventListener('click', scrollLeft);
+	    rightBtn.removeEventListener('click', scrollRight);
 	    if (css) {
 	      css.parentNode.removeChild(css);
 	    }
-	    cleanupHandles.map(function (fn) {
-	      return fn();
-	    });
 	  }
-
 	  return init();
 	}
 
@@ -211,141 +176,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.enableLongClick = enableLongClick;
-
-	var _require = __webpack_require__(4);
-
-	var trigger = _require.trigger;
-
-	/**
-	 * enableLongClick(el, fn, opts)
-	 * @param {function} callback(event, intensity)
-	 * @param {object} opts {clickDelay, tickInterval}
-	 */
-
-	function enableLongClick(el, _ref) {
-	  var _ref$clickDelay = _ref.clickDelay;
-	  var clickDelay = _ref$clickDelay === undefined ? 700 : _ref$clickDelay;
-	  var _ref$tickInterval = _ref.tickInterval;
-	  var tickInterval = _ref$tickInterval === undefined ? 500 : _ref$tickInterval;
-
-	  if (Array.isArray(el)) {
-	    return [].map.call(el, function (child) {
-	      return enableLongClick(child, { clickDelay: clickDelay, tickInterval: tickInterval });
-	    });
-	  }
-	  var intensity = 0;
-	  var clickStart = 0;
-	  var clickDuration = 0;
-	  var timer = null;
-	  var intensityTimer = null;
-
-	  var wireupListeners = function wireupListeners() {
-	    var enable = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
-
-	    var action = enable ? 'addEventListener' : 'removeEventListener';
-	    el[action]('mouseup', resetClick);
-	    el[action]('mouseleave', resetClick);
-	    el[action]('dragstart', resetClick);
-	  };
-	  var longClicked = function longClicked(e) {
-	    var target = e.target;
-
-	    clickDuration = Date.now() - clickStart;
-	    if (intensity === 0 && tickInterval > 0) {
-	      // only start this once, & if tickInterval
-	      intensityTimer = setInterval(function () {
-	        return longClicked(e);
-	      }, tickInterval);
-	    }
-	    trigger(e, 'longclick', { event: e, intensity: ++intensity, clickDuration: clickDuration });
-	  };
-	  var resetClick = function resetClick(e) {
-	    // This is the 'exit' pathway for pressed-state
-	    var target = e.target;
-
-	    e.preventDefault();
-	    clearTimeout(timer);
-	    clearInterval(intensityTimer);
-	    timer = null;
-	    intensity = 0;
-	    clickStart = 0;
-	    intensityTimer = null;
-	    wireupListeners(false);
-	    e.stopImmediatePropogation();
-	  };
-	  var startClick = function startClick(e) {
-	    wireupListeners(true);
-	    var target = e.target;
-
-	    clickStart = Date.now();
-	    timer = setTimeout(function () {
-	      return longClicked(e);
-	    }, clickDelay);
-	  };
-
-	  el.addEventListener('mousedown', startClick, false);
-
-	  // NEW: Return a cleanup handler
-	  return function () {
-	    return el.removeEventListener('mousedown', startClick, false);
-	  };
-
-	  //  // Return a helpful partial application to inject a callback into the addEventListener
-	  //  // return (callback) => el.addEventListener('longclick', callback, false);
-	}
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	exports.trigger = trigger;
-	/**
-	 * Note: Optionally add `trigger` to HTMLElement's prototype
-	 *
-	 * Examples:
-	 * trigger(el, 'longclick')
-	 * el.trigger('longclick')
-	 */
-	function trigger(el, event, opts) {
-	  // param shift / alt signatures
-	  var last = arguments[arguments.length - 1];
-	  opts = (typeof last === 'undefined' ? 'undefined' : _typeof(last)) === 'object' ? last : {};
-	  event = typeof el === 'string' ? el : event;
-	  el = this instanceof HTMLElement ? this : el;
-	  el.dispatchEvent(create(event, opts));
-	  return el;
-	}
-
-	function create(name) {
-	  var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
-
-	  if (!document.createEvent || document.createEventObject) {
-	    return alert('Brave soul, upgrade thy browser, for dragons be there.');
-	  }
-	  var event = document.createEvent('Event');
-	  event.initEvent(name, true, true);
-	  return Object.assign(event, opts);
-	}
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(6)();
+	exports = module.exports = __webpack_require__(4)();
 	// imports
 
 
@@ -356,7 +187,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
+/* 4 */
 /***/ function(module, exports) {
 
 	/*

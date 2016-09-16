@@ -1,0 +1,8 @@
+{
+  "name": "horizontal-scroller",
+  "dependencies": {},
+  "globalDependencies": {
+    "dom4": "registry:dt/dom4#1.5.0+20160412153730",
+    "node": "registry:dt/node#6.0.0+20160915134512"
+  }
+}

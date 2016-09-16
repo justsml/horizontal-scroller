@@ -1,5 +1,5 @@
 import Scroller from './scroller';
 
-window.Scroller = Scroller;
+window.Scroller = window.Scroller || Scroller;
 
 export { Scroller as Horizontal };

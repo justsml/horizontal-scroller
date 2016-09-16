@@ -18,7 +18,7 @@ if (env === 'production') {
 module.exports = {
   entry: './index.js',
   output: {
-    path: __dirname + '/dist',
+    path: __dirname + '/docs',
     filename: 'horizontal-scroller' + suffix,
     library: 'horizontal-scroller',
     umdNamedDefine: false,
