@@ -1,11 +1,11 @@
-[![GitHub stars](https://img.shields.io/github/stars/justsml/horizontal-scroller.svg?style=social&label=Star&maxAge=2592000)]()
-[![GitHub forks](https://img.shields.io/github/forks/justsml/horizontal-scroller.svg?style=social&label=Fork&maxAge=2592000)]()
-[![GitHub release](https://img.shields.io/github/release/justsml/horizontal-scroller.svg?maxAge=2592000)]()
-[![npm](https://img.shields.io/npm/dt/horizontal-scroller.svg?maxAge=2592000)]()
+![GitHub stars](https://img.shields.io/github/stars/justsml/horizontal-scroller.svg?style=social&label=Star&maxAge=2592000)
+![GitHub forks](https://img.shields.io/github/forks/justsml/horizontal-scroller.svg?style=social&label=Fork&maxAge=2592000)
+![GitHub release](https://img.shields.io/github/release/justsml/horizontal-scroller.svg?maxAge=2592000)
+![npm](https://img.shields.io/npm/dt/horizontal-scroller.svg?maxAge=2592000)
 
 # horizontal-scroller Pure JS Widget
 
-## [View Demo](http://www.danlevy.net/horizontal-scroller/)
+## [View Demo at http://www.danlevy.net/horizontal-scroller/](http://www.danlevy.net/horizontal-scroller/)
 
 ## Preview
 
