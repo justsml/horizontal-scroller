@@ -110,35 +110,60 @@ return /******/ (function(modules) { // webpackBootstrap
 	  currentXOffset = 0,
 	      cleanupHandles = [],
 	      // destroy() helper
-	  scrollLeft = void 0,
-	      scrollRight = void 0,
-	      //click events
-	  jumpLeft = void 0,
-	      jumpRight = void 0; //  click events
+	  events = {},
+	      layout = void 0;
+	  // scrollLeft, scrollRight, //click events
+	  // jumpLeft,   jumpRight; //  click events
 	  wrapper = el.querySelector('.wrapper');
 	  itemList = el.querySelector('.items');
 	  leftBtn = el.querySelector('.leftArrow');
 	  rightBtn = el.querySelector('.rightArrow');
 
+	  function getLayout() {
+	    return {
+	      scrollWidth: wrapper && wrapper.getBoundingClientRect().width || -1,
+	      totalWidth: itemList && itemList.getBoundingClientRect().width || -1,
+	      count: itemList && itemList.children.length || -1
+	    };
+	  }
+	  function hasLayoutChanged() {
+	    var currLayout = Object.assign({}, layout);
+	    layout = getLayout();
+	    var identical = Object.keys(currLayout).every(function (key) {
+	      return currLayout[key] === layout[key];
+	    });
+	    return !identical;
+	  }
 	  function updateLayout() {
+	    var layout = arguments.length <= 0 || arguments[0] === undefined ? getLayout() : arguments[0];
+
 	    var wrapperRect = wrapper.getBoundingClientRect();
 	    var listRect = itemList.getBoundingClientRect();
 	    var item = itemList.children[0] && itemList.children[0];
 	    var itemRect = item && item.getBoundingClientRect();
-	    var totalWidth = listRect && listRect.width;
-	    var scrollWidth = wrapperRect.width;
+	    var totalWidth = layout.totalWidth;
+	    var scrollWidth = layout.scrollWidth;
+
+
 	    stepSizePx = itemRect.width;
 	    transformMaxPx = totalWidth - scrollWidth;
-	    scrollLeft = scroll.bind(null, 'left', stepSizePx);
-	    scrollRight = scroll.bind(null, 'right', stepSizePx);
-	    jumpLeft = scroll.bind(null, 'left', 2 * stepSizePx);
-	    jumpRight = scroll.bind(null, 'right', 2 * stepSizePx);
+	    // Set events handlers
+	    events.scrollLeft = scroll.bind(null, 'left', stepSizePx);
+	    events.scrollRight = scroll.bind(null, 'right', stepSizePx);
+	    events.jumpLeft = scroll.bind(null, 'left', 3 * stepSizePx);
+	    events.jumpRight = scroll.bind(null, 'right', 3 * stepSizePx);
+	    events.warpLeft = scroll.bind(null, 'left', scrollWidth);
+	    events.warpRight = scroll.bind(null, 'right', scrollWidth);
 	    return item;
 	  }
 	  function scroll(direction) {
 	    var stepSizePx = arguments.length <= 1 || arguments[1] === undefined ? stepSizePx : arguments[1];
 	    var event = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
 
+	    if (hasLayoutChanged()) {
+	      console.warn('Verify: hasLayoutChanged() === true - verify change!');
+	      updateLayout();
+	    }
 	    var tempOffset = currentXOffset;
 	    if (direction === 'left') {
 	      currentXOffset += stepSizePx;
@@ -167,23 +192,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	  function setupEvents() {
-	    cleanupHandles = enableLongClick([leftBtn, rightBtn]);
+	    cleanupHandles = enableLongClick([leftBtn, rightBtn], { clickDelay: 400, tickInterval: 175 });
 	    cleanupHandles.push(function () {
-	      return leftBtn.removeEventListener('click', scrollLeft, false);
+	      return leftBtn.removeEventListener('click', events.scrollLeft, false);
 	    });
 	    cleanupHandles.push(function () {
-	      return rightBtn.removeEventListener('click', scrollRight, false);
+	      return rightBtn.removeEventListener('click', events.scrollRight, false);
 	    });
 	    cleanupHandles.push(function () {
-	      return leftBtn.removeEventListener('longclick', scrollLeft, false);
+	      return leftBtn.removeEventListener('dblclick', events.warpLeft, false);
 	    });
 	    cleanupHandles.push(function () {
-	      return rightBtn.removeEventListener('longclick', scrollRight, false);
+	      return rightBtn.removeEventListener('dblclick', events.warpRight, false);
 	    });
-	    leftBtn.addEventListener('longclick', scrollLeft, false);
-	    rightBtn.addEventListener('longclick', scrollRight, false);
-	    leftBtn.addEventListener('click', scrollLeft, false);
-	    rightBtn.addEventListener('click', scrollRight, false);
+	    cleanupHandles.push(function () {
+	      return leftBtn.removeEventListener('longclick', events.scrollLeft, false);
+	    });
+	    cleanupHandles.push(function () {
+	      return rightBtn.removeEventListener('longclick', events.scrollRight, false);
+	    });
+	    leftBtn.addEventListener('longclick', events.jumpLeft, false);
+	    rightBtn.addEventListener('longclick', events.jumpRight, false);
+	    leftBtn.addEventListener('dblclick', events.warpLeft, false);
+	    rightBtn.addEventListener('dblclick', events.warpRight, false);
+	    leftBtn.addEventListener('click', events.scrollLeft, false);
+	    rightBtn.addEventListener('click', events.scrollRight, false);
 	  }
 	  function init() {
 	    injectStyles();
@@ -232,7 +265,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _ref$clickDelay = _ref.clickDelay;
 	  var clickDelay = _ref$clickDelay === undefined ? 700 : _ref$clickDelay;
 	  var _ref$tickInterval = _ref.tickInterval;
-	  var tickInterval = _ref$tickInterval === undefined ? 500 : _ref$tickInterval;
+	  var tickInterval = _ref$tickInterval === undefined ? 250 : _ref$tickInterval;
 
 	  if (Array.isArray(el)) {
 	    return [].map.call(el, function (child) {
@@ -263,13 +296,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return longClicked(e);
 	      }, tickInterval);
 	    }
-	    trigger(e, 'longclick', { event: e, intensity: ++intensity, clickDuration: clickDuration });
+	    trigger(target, 'longclick', { event: e, intensity: ++intensity, clickDuration: clickDuration });
 	  };
 	  var resetClick = function resetClick(e) {
 	    // This is the 'exit' pathway for pressed-state
 	    var target = e.target;
+	    // e.preventDefault();
 
-	    e.preventDefault();
 	    clearTimeout(timer);
 	    clearInterval(intensityTimer);
 	    timer = null;
@@ -277,7 +310,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    clickStart = 0;
 	    intensityTimer = null;
 	    wireupListeners(false);
-	    e.stopImmediatePropogation();
+	    e.stopImmediatePropagation();
 	  };
 	  var startClick = function startClick(e) {
 	    wireupListeners(true);

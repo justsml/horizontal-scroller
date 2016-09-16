@@ -11,12 +11,11 @@
   "scripts": {
     "start": "npm run build && http-server -p 1997",
     "start-now": "http-server -p 443",
-    "build": "webpack --config ./webpack.config.js && npm run copy",
-    "build-now": "NODE_ENV=production webpack --config ./webpack.config.js && npm run copy",
+    "build": "webpack --config ./webpack.config.js",
+    "build-now": "NODE_ENV=production webpack --config ./webpack.config.js",
     "watch": "webpack --watch --config ./webpack.config.js",
     "test-debug": "casperjs test --verbose --log-level=debug ./tests/e2e-tests.js",
-    "test": "casperjs test --verbose ./tests/e2e-tests.js",
-    "copy": "cp -rav ./tests/index.html ./dist/* ./docs/"
+    "test": "casperjs test --verbose ./tests/e2e-tests.js"
   },
   "author": "Dan Levy <Dan@DanLevy.net>",
   "license": "MIT",

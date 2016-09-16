@@ -2,7 +2,7 @@
 <html>
 
   <head>
-    <meta charset='UTF-8'>
+    <meta charset='utf-8'>
     <meta name="robots" content="noindex">
     <link rel='stylesheet' href='//codepen.io/assets/reset/reset.css'>
     <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'>
@@ -14,10 +14,15 @@
       .container {
         user-select: none;
       }
+      .features {
+        display: block;
+        width: 100%;
+      }
       .scroller {
+        margin: 20px auto;
         width: 100%;
         display: flex;
-        flex-flow: row no-wrap;
+        flex-flow: row nowrap;
         justify-content: space-between;
       }
       .scroller .svgArrow {
@@ -47,7 +52,7 @@
         margin: 1rem;
         list-style: none;
         display: inline-flex;
-        flex-wrap: no-wrap;
+        flex-wrap: nowrap;
       }
       .scroller .items .unselectable {
         margin-right: 2rem;
@@ -182,10 +187,20 @@
             <path d="M 2 1 L 48 43.26893433745849 M 4.359289078654172 88 L 48 43.26893433745849" class="icon svgArrow"></path>
           </svg>
         </div>
+        <div class="features">
+          <div class="well">
+            <h3>Features</h3>
+            <ol>
+              <li>Supports: Single, Double, &amp; Long Click</li>
+              <li>Uses GPU Acceleration/caching</li>
+              <li>Minimal required base style (see source of `docs/index.html`)</li>
+            </ol>
+          </div>
+        </div>
       </div>
     </div>
     <script src='//cdnjs.cloudflare.com/ajax/libs/holder/2.9.3/holder.min.js'></script>
-    <script src='./horizontal-scroller.js?cache=not-now'></script>
+    <script src='../dist/horizontal-scroller.js?cache=not-now'></script>
     <script>
       var scrollerUI;
       function initScroller() {

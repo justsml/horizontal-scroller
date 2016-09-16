@@ -13,29 +13,51 @@ function Scroller(el) {
       transformMaxPx, stepSizePx,                // Misc scroll coords
       currentXOffset = 0,
       cleanupHandles = [], // destroy() helper
-      scrollLeft, scrollRight, //click events
-      jumpLeft,   jumpRight; //  click events
+      events = {}, layout;
+      // scrollLeft, scrollRight, //click events
+      // jumpLeft,   jumpRight; //  click events
   wrapper   = el.querySelector('.wrapper');
   itemList  = el.querySelector('.items');
   leftBtn   = el.querySelector('.leftArrow');
   rightBtn  = el.querySelector('.rightArrow');
 
-  function updateLayout() {
+  function getLayout() {
+    return {
+      scrollWidth: wrapper && wrapper.getBoundingClientRect().width || -1,
+      totalWidth: itemList && itemList.getBoundingClientRect().width || -1,
+      count: itemList && itemList.children.length || -1
+    }
+  }
+  function hasLayoutChanged() {
+    const currLayout = Object.assign({}, layout);
+    layout = getLayout();
+    const identical = Object.keys(currLayout)
+      .every(key => currLayout[key] === layout[key])
+    return !identical;
+  }
+  function updateLayout(layout = getLayout()) {
     let wrapperRect = wrapper.getBoundingClientRect();
     let listRect    = itemList.getBoundingClientRect();
     let item        = itemList.children[0] && itemList.children[0];
     let itemRect    = item && item.getBoundingClientRect();
-    let totalWidth  = listRect && listRect.width;
-    let scrollWidth = wrapperRect.width;
+    let {totalWidth, scrollWidth} = layout;
+
     stepSizePx      = itemRect.width;
     transformMaxPx  = totalWidth - scrollWidth;
-    scrollLeft      = scroll.bind(null, 'left', stepSizePx);
-    scrollRight     = scroll.bind(null, 'right', stepSizePx);
-    jumpLeft        = scroll.bind(null, 'left', 2 * stepSizePx);
-    jumpRight       = scroll.bind(null, 'right', 2 * stepSizePx);
+    // Set events handlers
+    events.scrollLeft      = scroll.bind(null, 'left', stepSizePx);
+    events.scrollRight     = scroll.bind(null, 'right', stepSizePx);
+    events.jumpLeft        = scroll.bind(null, 'left', 3 * stepSizePx);
+    events.jumpRight       = scroll.bind(null, 'right', 3 * stepSizePx);
+    events.warpLeft        = scroll.bind(null, 'left', scrollWidth);
+    events.warpRight       = scroll.bind(null, 'right', scrollWidth);
     return item;
   }
   function scroll(direction, stepSizePx = stepSizePx, event = {}) {
+    if (hasLayoutChanged()) {
+      console.warn('Verify: hasLayoutChanged() === true - verify change!');
+      updateLayout();
+    }
     let tempOffset = currentXOffset;
     if (direction === 'left') {
       currentXOffset += stepSizePx;
@@ -61,15 +83,19 @@ function Scroller(el) {
     }
   }
   function setupEvents() {
-    cleanupHandles = enableLongClick([leftBtn, rightBtn]);
-    cleanupHandles.push(() => leftBtn.removeEventListener('click', scrollLeft, false));
-    cleanupHandles.push(() => rightBtn.removeEventListener('click', scrollRight, false));
-    cleanupHandles.push(() => leftBtn.removeEventListener('longclick', scrollLeft, false));
-    cleanupHandles.push(() => rightBtn.removeEventListener('longclick', scrollRight, false));
-    leftBtn.addEventListener('longclick', scrollLeft, false);
-    rightBtn.addEventListener('longclick', scrollRight, false);
-    leftBtn.addEventListener('click', scrollLeft, false);
-    rightBtn.addEventListener('click', scrollRight, false);
+    cleanupHandles = enableLongClick([leftBtn, rightBtn], {clickDelay: 400, tickInterval: 175});
+    cleanupHandles.push(() => leftBtn.removeEventListener('click', events.scrollLeft, false));
+    cleanupHandles.push(() => rightBtn.removeEventListener('click', events.scrollRight, false));
+    cleanupHandles.push(() => leftBtn.removeEventListener('dblclick', events.warpLeft, false));
+    cleanupHandles.push(() => rightBtn.removeEventListener('dblclick', events.warpRight, false));
+    cleanupHandles.push(() => leftBtn.removeEventListener('longclick', events.scrollLeft, false));
+    cleanupHandles.push(() => rightBtn.removeEventListener('longclick', events.scrollRight, false));
+    leftBtn.addEventListener('longclick', events.jumpLeft, false);
+    rightBtn.addEventListener('longclick', events.jumpRight, false);
+    leftBtn.addEventListener('dblclick', events.warpLeft, false);
+    rightBtn.addEventListener('dblclick', events.warpRight, false);
+    leftBtn.addEventListener('click', events.scrollLeft, false);
+    rightBtn.addEventListener('click', events.scrollRight, false);
   }
   function init() {
     injectStyles();

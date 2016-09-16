@@ -5,7 +5,7 @@ const {trigger} = require('./eventTrigger');
  * @param {function} callback(event, intensity)
  * @param {object} opts {clickDelay, tickInterval}
  */
-export function enableLongClick(el, {clickDelay = 700, tickInterval = 500}) {
+export function enableLongClick(el, {clickDelay = 700, tickInterval = 250}) {
   if (Array.isArray(el)) { return [].map.call(el, child => enableLongClick(child, {clickDelay, tickInterval})); }
   var intensity      = 0;
   var clickStart     = 0;
@@ -26,12 +26,12 @@ export function enableLongClick(el, {clickDelay = 700, tickInterval = 500}) {
       // only start this once, & if tickInterval
       intensityTimer = setInterval(() => longClicked(e), tickInterval);
     }
-    trigger(e, 'longclick', {event: e, intensity: ++intensity, clickDuration});
+    trigger(target, 'longclick', {event: e, intensity: ++intensity, clickDuration});
   };
   const resetClick = (e) => {
     // This is the 'exit' pathway for pressed-state
     const {target} = e;
-    e.preventDefault();
+    // e.preventDefault();
     clearTimeout(timer);
     clearInterval(intensityTimer);
     timer = null;
@@ -39,7 +39,7 @@ export function enableLongClick(el, {clickDelay = 700, tickInterval = 500}) {
     clickStart = 0;
     intensityTimer = null;
     wireupListeners(false);
-    e.stopImmediatePropogation();
+    e.stopImmediatePropagation();
   }
   const startClick = (e) => {
     wireupListeners(true);
