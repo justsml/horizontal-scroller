@@ -10,7 +10,7 @@ if (env === 'production') {
   suffix = '.min.js';
   plugins.push(new webpack.optimize.UglifyJsPlugin({
     mangle: {
-      except: ['Scroller', 'exports', 'require']
+      except: ['HorizontalScroller', 'exports', 'require']
     }
   }));
 }
@@ -19,8 +19,8 @@ module.exports = {
   entry: './index.js',
   output: {
     path: __dirname + '/dist',
-    filename: 'bundle' + suffix,
-    library: 'Scroller',
+    filename: 'horizontal-scroller' + suffix,
+    library: 'horizontal-scroller',
     umdNamedDefine: false,
     libraryTarget: 'umd',
   },
@@ -28,7 +28,7 @@ module.exports = {
     loaders: [
       // { test: /\.css$/, exclude: /\.useable\.css$/, loader: 'style!css' },
       // { test: /\.useable\.css$/, loader: 'style/useable!css' },
-      { test: require.resolve("./scroller.js"), loader: "expose?Scroller" },
+      { test: require.resolve("./scroller.js"), loader: "expose?HorizontalScroller" },
       { test: /\.less$/, loader: 'css!less' },
       {
         test: /\.js$/,

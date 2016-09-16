@@ -12,7 +12,7 @@ function Scroller(el) {
       currentXOffset = 0,
       scrollLeft, scrollRight; // event fn hooks
   wrapper   = el.querySelector('.wrapper');
-  itemList  = el.querySelector('ul.items');
+  itemList  = el.querySelector('.items');
   leftBtn   = el.querySelector('.leftArrow');
   rightBtn  = el.querySelector('.rightArrow');
 

@@ -1,5 +1,5 @@
 //const casper = require('casper').create()
-const URL = 'http://0.0.0.0:1337/tests/index.html'
+const URL = 'http://0.0.0.0:1997/tests/index.html'
 const VIEWPORT = {
   top: 0,
   left: 0,
@@ -19,7 +19,7 @@ casper.test.begin('has 2 arrows', 3, function (test) {
   //   this.die("Complete callback has failed: " + err);
   // });
 
-  casper.start('http://0.0.0.0:1337/tests/index.html', function () {
+  casper.start('http://0.0.0.0:1997/tests/index.html', function () {
     this.echo('Loaded')
   }).waitForText('Horizontal', function () {
     test.assertTextExists('Horizontal', 'page body contains "Horizontal"')
@@ -38,7 +38,7 @@ casper.test.begin('has 2 arrows', 3, function (test) {
 });
 
 casper.test.begin('can scroll right', 5, function (test) {
-  casper.start('http://0.0.0.0:1337/tests/index.html', function () {
+  casper.start('http://0.0.0.0:1997/tests/index.html', function () {
     this.wait(500, function () {
       this.echo('Scroll test')
     })
@@ -46,13 +46,13 @@ casper.test.begin('can scroll right', 5, function (test) {
   })
   casper.then(function () {
     this.echo('User Agent: ' + casper.evaluate(function () {
-      // var lastItem = document.querySelectorAll('ul.items li:last-child');
-      // var firstItem = document.querySelectorAll('ul.items li:first-child');
+      // var lastItem = document.querySelectorAll('.items li:last-child');
+      // var firstItem = document.querySelectorAll('.items li:first-child');
       return navigator.userAgent;
     }));
     this.echo('LOADED URL:' + casper.evaluate(function () {
-      // var lastItem = document.querySelectorAll('ul.items li:last-child');
-      // var firstItem = document.querySelectorAll('ul.items li:first-child');
+      // var lastItem = document.querySelectorAll('.items li:last-child');
+      // var firstItem = document.querySelectorAll('.items li:first-child');
       return location.href;
     }))
   })
@@ -60,7 +60,7 @@ casper.test.begin('can scroll right', 5, function (test) {
     var lastOffset = 0;
     var showTransformOffset = function () {
       var txPx = casper.evaluate(function () {
-        var transform = document.querySelector('ul.items').style.transform;
+        var transform = document.querySelector('.items').style.transform;
         // remove string around 'translatex(n)'
         return transform && transform.replace(/[^\d\-\.]/g, '') || 0;
       });
@@ -70,7 +70,7 @@ casper.test.begin('can scroll right', 5, function (test) {
     };
 
     // var itemsListRect = casper.evaluate(function() {
-    //   return document.querySelector('ul.items').getBoundingClientRect();
+    //   return document.querySelector('.items').getBoundingClientRect();
     // });
     // this.echo('itemsList #1:' + JSON.stringify(itemsListRect, null, 2));
     this.thenClick('.rightArrow', function () {
@@ -101,18 +101,18 @@ casper.test.begin('can scroll right', 5, function (test) {
   })
   casper.then(function () {
     // var itemsListRect = casper.evaluate(function() {
-    //   return document.querySelector('ul.items').getBoundingClientRect();
+    //   return document.querySelector('.items').getBoundingClientRect();
     // });
     // var boxes = casper.evaluate(function() {
-    //   return document.querySelectorAll('ul.items li');
+    //   return document.querySelectorAll('.items li');
     // });
     // var firstBox = casper.evaluate(function() {
-    //   var items = document.querySelectorAll('ul.items li');
+    //   var items = document.querySelectorAll('.items li');
     //   var item = items[0];
     //   return item.getBoundingClientRect();
     // });
     // var lastBox = casper.evaluate(function() {
-    //   var items = document.querySelectorAll('ul.items li img');
+    //   var items = document.querySelectorAll('.items li img');
     //   var item = items[items.length - 1];
     //   return item.getBoundingClientRect();
     // });
@@ -123,7 +123,7 @@ casper.test.begin('can scroll right', 5, function (test) {
 
     this.capture('temp/scroll-test-2-3.jpg', VIEWPORT, CAPTURE_FORMAT);
     casper.test.assertElementCount('li', 12)
-    // casper.test.assertNotVisible('ul.items li:first-child img', 'First image shouldn\'t be visible');
+    // casper.test.assertNotVisible('.items li:first-child img', 'First image shouldn\'t be visible');
   })
 })
 casper.run(function () {
