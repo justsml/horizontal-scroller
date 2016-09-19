@@ -13,41 +13,42 @@ export function enableLongClick(el, {clickDelay = 700, tickInterval = 250}) {
   var timer          = null;
   var intensityTimer = null;
 
-  const wireupListeners = (enable = true) => {
+  const wireupResetListeners = (enable = true) => {
     const action = enable ? 'addEventListener' : 'removeEventListener';
     el[action]('mouseup',     resetClick);
     el[action]('mouseleave',  resetClick);
     el[action]('dragstart',   resetClick);
   }
   const longClicked = e => {
-    const {target} = e;
-    clickDuration = Date.now() - clickStart;
+    const {target}  = e;
+    clickDuration   = Date.now() - clickStart;
     if (intensity === 0 && tickInterval > 0) {
       // only start this once, & if tickInterval
       intensityTimer = setInterval(() => longClicked(e), tickInterval);
     }
     trigger(target, 'longclick', {event: e, intensity: ++intensity, clickDuration});
-  };
-  const resetClick = (e) => {
+  }
+  const startClick = e => {
+    wireupResetListeners(true);
+    const {target} = e;
+    clickStart     = Date.now();
+    timer          = setTimeout(() => longClicked(e), clickDelay);
+  }
+  const resetClick = e => {
     // This is the 'exit' pathway for pressed-state
     const {target} = e;
     // e.preventDefault();
     clearTimeout(timer);
     clearInterval(intensityTimer);
-    timer = null;
-    intensity = 0;
-    clickStart = 0;
+    timer       = null;
+    intensity   = 0;
+    clickStart  = 0;
     intensityTimer = null;
-    wireupListeners(false);
+    wireupResetListeners(false);
     e.stopImmediatePropagation();
   }
-  const startClick = (e) => {
-    wireupListeners(true);
-    const {target} = e;
-    clickStart     = Date.now();
-    timer          = setTimeout(() => longClicked(e), clickDelay);
-  }
 
+  // Wireup main 'entry' event... (add touch support starting here)
   el.addEventListener('mousedown', startClick, false);
 
   // NEW: Return a cleanup handler
