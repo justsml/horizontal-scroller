@@ -7,17 +7,21 @@ const {trigger} = require('./eventTrigger');
  */
 export function enableLongClick(el, {clickDelay = 700, tickInterval = 250}) {
   if (Array.isArray(el)) { return [].map.call(el, child => enableLongClick(child, {clickDelay, tickInterval})); }
+  const resetEvents  = ['mouseup', 'mouseleave', 'dragstart'];
+  const beginEvents  = ['mousedown'];
   var intensity      = 0;
   var clickStart     = 0;
   var clickDuration  = 0;
   var timer          = null;
-  var intensityTimer = null;
 
-  const wireupResetListeners = (enable = true) => {
+  var intensityTimer = null;
+  const wireupListeners = (fn, eventNames = [], enable = true) => {
     const action = enable ? 'addEventListener' : 'removeEventListener';
-    el[action]('mouseup',     resetClick);
-    el[action]('mouseleave',  resetClick);
-    el[action]('dragstart',   resetClick);
+    eventNames.forEach(name => el[action](name, fn, false));
+    // // Returns destroy/cleanup method automatically -
+    // //N.B: i think i prefer this pattern ... though
+    // //not sure if it jives with the event model here
+    return () => eventNames.forEach(name => el.removeEventListener(name, fn, false));
   }
   const longClicked = e => {
     const {target}  = e;
@@ -29,7 +33,7 @@ export function enableLongClick(el, {clickDelay = 700, tickInterval = 250}) {
     trigger(target, 'longclick', {event: e, intensity: ++intensity, clickDuration});
   }
   const startClick = e => {
-    wireupResetListeners(true);
+    wireupListeners(resetClick, resetEvents, true);
     const {target} = e;
     clickStart     = Date.now();
     timer          = setTimeout(() => longClicked(e), clickDelay);
@@ -44,17 +48,13 @@ export function enableLongClick(el, {clickDelay = 700, tickInterval = 250}) {
     intensity   = 0;
     clickStart  = 0;
     intensityTimer = null;
-    wireupResetListeners(false);
+    wireupListeners(resetClick, resetEvents, false);
     e.stopImmediatePropagation();
   }
 
   // Wireup main 'entry' event... (add touch support starting here)
-  el.addEventListener('mousedown', startClick, false);
-
+  const destroy = wireupListeners(startClick, beginEvents, true);
   // NEW: Return a cleanup handler
-  return () => el.removeEventListener('mousedown', startClick, false);
-
-  //  // Return a helpful partial application to inject a callback into the addEventListener
-  //  // return (callback) => el.addEventListener('longclick', callback, false);
+  return destroy;
 
 }

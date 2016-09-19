@@ -272,19 +272,30 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return enableLongClick(child, { clickDelay: clickDelay, tickInterval: tickInterval });
 	    });
 	  }
+	  var resetEvents = ['mouseup', 'mouseleave', 'dragstart'];
+	  var beginEvents = ['mousedown'];
 	  var intensity = 0;
 	  var clickStart = 0;
 	  var clickDuration = 0;
 	  var timer = null;
-	  var intensityTimer = null;
 
-	  var wireupListeners = function wireupListeners() {
-	    var enable = arguments.length <= 0 || arguments[0] === undefined ? true : arguments[0];
+	  var intensityTimer = null;
+	  var wireupListeners = function wireupListeners(fn) {
+	    var eventNames = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
+	    var enable = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
 
 	    var action = enable ? 'addEventListener' : 'removeEventListener';
-	    el[action]('mouseup', resetClick);
-	    el[action]('mouseleave', resetClick);
-	    el[action]('dragstart', resetClick);
+	    eventNames.forEach(function (name) {
+	      return el[action](name, fn, false);
+	    });
+	    // // Returns destroy/cleanup method automatically -
+	    // //N.B: i think i prefer this pattern ... though
+	    // //not sure if it jives with the event model here
+	    return function () {
+	      return eventNames.forEach(function (name) {
+	        return el.removeEventListener(name, fn, false);
+	      });
+	    };
 	  };
 	  var longClicked = function longClicked(e) {
 	    var target = e.target;
@@ -298,6 +309,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    trigger(target, 'longclick', { event: e, intensity: ++intensity, clickDuration: clickDuration });
 	  };
+	  var startClick = function startClick(e) {
+	    wireupListeners(resetClick, resetEvents, true);
+	    var target = e.target;
+
+	    clickStart = Date.now();
+	    timer = setTimeout(function () {
+	      return longClicked(e);
+	    }, clickDelay);
+	  };
 	  var resetClick = function resetClick(e) {
 	    // This is the 'exit' pathway for pressed-state
 	    var target = e.target;
@@ -309,28 +329,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    intensity = 0;
 	    clickStart = 0;
 	    intensityTimer = null;
-	    wireupListeners(false);
+	    wireupListeners(resetClick, resetEvents, false);
 	    e.stopImmediatePropagation();
 	  };
-	  var startClick = function startClick(e) {
-	    wireupListeners(true);
-	    var target = e.target;
 
-	    clickStart = Date.now();
-	    timer = setTimeout(function () {
-	      return longClicked(e);
-	    }, clickDelay);
-	  };
-
-	  el.addEventListener('mousedown', startClick, false);
-
+	  // Wireup main 'entry' event... (add touch support starting here)
+	  var destroy = wireupListeners(startClick, beginEvents, true);
 	  // NEW: Return a cleanup handler
-	  return function () {
-	    return el.removeEventListener('mousedown', startClick, false);
-	  };
-
-	  //  // Return a helpful partial application to inject a callback into the addEventListener
-	  //  // return (callback) => el.addEventListener('longclick', callback, false);
+	  return destroy;
 	}
 
 /***/ },
