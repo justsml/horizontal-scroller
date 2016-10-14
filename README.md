@@ -2,9 +2,10 @@
 
 > ~2kB Horizontal Scrolling Widget in Pure JS + CSS. Features: ES6, WebPack, LESS. CasperJS tests!
 
-![GitHub stars](https://img.shields.io/github/stars/justsml/horizontal-scroller.svg?style=social&label=Star&maxAge=2592000)
-![GitHub forks](https://img.shields.io/github/forks/justsml/horizontal-scroller.svg?style=social&label=Fork&maxAge=2592000)
-![npm](https://img.shields.io/npm/dt/horizontal-scroller.svg?maxAge=2592000)
+[![Build Status](https://travis-ci.org/justsml/horizontal-scroller.svg?branch=master)](https://travis-ci.org/justsml/horizontal-scroller)
+[![GitHub Stars](https://img.shields.io/github/stars/justsml/horizontal-scroller.svg)](https://github.com/justsml/horizontal-scroller/)
+[![npm](https://img.shields.io/npm/dt/horizontal-scroller.svg?maxAge=1592000)](https://www.npmjs.com/package/horizontal-scroller)
+[![npm](https://img.shields.io/npm/v/horizontal-scroller.svg?maxAge=1592000)](https://www.npmjs.com/package/horizontal-scroller)
 
 
 ## [View Demo at http://www.danlevy.net/horizontal-scroller/](http://www.danlevy.net/horizontal-scroller/)
