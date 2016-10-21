@@ -135,7 +135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return !identical;
 	  }
 	  function updateLayout() {
-	    var layout = arguments.length <= 0 || arguments[0] === undefined ? getLayout() : arguments[0];
+	    var layout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : getLayout();
 
 	    var wrapperRect = wrapper.getBoundingClientRect();
 	    var listRect = itemList.getBoundingClientRect();
@@ -157,8 +157,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return item;
 	  }
 	  function scroll(direction) {
-	    var stepSizePx = arguments.length <= 1 || arguments[1] === undefined ? stepSizePx : arguments[1];
-	    var event = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+	    var stepSizePx = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : stepSizePx;
+	    var event = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
 	    if (hasLayoutChanged()) {
 	      console.warn('Verify: hasLayoutChanged() === true - verify change!');
@@ -281,8 +281,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  var intensityTimer = null;
 	  var wireupListeners = function wireupListeners(fn) {
-	    var eventNames = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
-	    var enable = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+	    var eventNames = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+	    var enable = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
 
 	    var action = enable ? 'addEventListener' : 'removeEventListener';
 	    eventNames.forEach(function (name) {
@@ -349,7 +349,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 	exports.trigger = trigger;
 	/**
@@ -370,7 +370,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 	function create(name) {
-	  var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	  var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
 	  if (!document.createEvent || document.createEventObject) {
 	    return alert('Brave soul, upgrade thy browser, for dragons be there.');
