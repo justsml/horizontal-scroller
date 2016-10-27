@@ -17,7 +17,7 @@ export function trigger(el, event, opts) {
 
 function create(name, opts = {}) {
   if (!document.createEvent || document.createEventObject) {
-    return alert('Brave soul, upgrade thy browser, for dragons be there.');
+    return alert('Brave soul, upgrade thy browser, for there be dragons.');
   }
   const event = document.createEvent('Event');
   event.initEvent(name, true, true);
